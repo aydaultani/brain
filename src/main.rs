@@ -1,3 +1,8 @@
+mod parser;
+mod utils;
+use parser::parse;
+use utils::*;
+
 fn main() {
-    println!("Hello, world!");
+    parse("1+1/10*20#");
 }
