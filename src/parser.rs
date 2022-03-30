@@ -1,35 +1,25 @@
-use crate::*;
+use crate::lexer::*;
+use crate::utils::*;
+use crate::error::*;
 
-fn get_type(item: char) -> Result {
-    if item == '+' {
-        return Result {item: item, token_type: Token::ADD}
+pub fn parse (input: &str) -> Vec<TokenRes> {
+    let mut lexer = Lexer::new(input);
+    let mut current_num_list: Vec<char> = Vec::new();
+    let mut final_list: Vec<TokenRes> = Vec::new();
+    for _i in input.chars() {
+        if lexer.fetch_cur().item.is_numeric() {
+            current_num_list.push(lexer.fetch_cur().item);
+        }
+        if !lexer.fetch_cur().item.is_numeric() {
+            final_list.push(TokenRes {item: current_num_list.iter().collect::<String>() , token_type: Token::NUM});
+            current_num_list.clear();
+            final_list.push(TokenRes {item: lexer.fetch_cur().item.to_string(), token_type: get_type(lexer.fetch_cur().item)});
+        }
+        lexer.advance(); 
     }
-    else if item == '-' {
-        return Result {item: item, token_type: Token::SUB}
-    }
-    else if item == '*' {
-        return Result {item: item, token_type: Token::MULT}
-    }
-    else if item == '/' {
-        return Result {item: item, token_type: Token::DIV}
-    }
-    else if item.is_numeric() {
-        return Result {item: item, token_type: Token::NUM}
-    }
-    else if item == '#' {
-        return Result {item: item, token_type: Token::COMMENT}
-    }
-    else {
-        return Result {item: item, token_type: Token::UNKNOWN}
-    }
-}
+    final_list = clean_input(&final_list);
+    check_error(&final_list);
 
-pub fn parse (input: &str) {
-    println!("Expression : {}" , input);
-    println!("____________________________");
-    println!("TOKENS");
-    for character in input.chars() {
-        println!("{:#?}" , get_type(character));
-    }
-    println!("____________________________");
+
+    return final_list
 }

@@ -1,8 +1,6 @@
-mod parser;
-mod utils;
-use parser::parse;
-use utils::*;
+use brain::parser::*;
+
 
 fn main() {
-    parse("1+1/10*20#");
+    println!("{:?}" , parse("++1;"));
 }
