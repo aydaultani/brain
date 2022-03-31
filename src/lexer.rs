@@ -27,6 +27,9 @@ pub fn get_type(item: char) -> Token {
     else if item == ';' {
         return Token::COLON
     }
+    else if item.is_alphabetic() {
+        return Token::LETTER
+    }
     else {
         return Token::UNKNOWN
     }
@@ -68,7 +71,7 @@ impl Lexer {
         }
     }
 
-    pub fn _peek(&mut self) -> Result {
+    pub fn peek(&mut self) -> Result {
         match self.chars.get_mut(self.cursor + 1) {
             Some(_) => Result {item: *self.chars.get(self.cursor + 1).unwrap(), token_type: get_type(*self.chars.get(self.cursor + 1).unwrap())},
             None => Result {item: ' ' , token_type: Token::UNKNOWN}

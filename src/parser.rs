@@ -15,11 +15,21 @@ pub fn parse (input: &str) -> Vec<TokenRes> {
             current_num_list.clear();
             final_list.push(TokenRes {item: lexer.fetch_cur().item.to_string(), token_type: get_type(lexer.fetch_cur().item)});
         }
+        if lexer.fetch_cur().item == 's' {
+            if lexer.peek().item == 'e' {
+                final_list.push(TokenRes {item: "set".to_string(), token_type: Token::SET})
+            }
+        }
+        if lexer.fetch_cur().item == 'g' {
+            if lexer.peek().item == 'e' {
+               final_list.push(TokenRes {item: "get".to_string(), token_type: Token::GET}) 
+            }
+        }
         lexer.advance(); 
     }
     final_list = clean_input(&final_list);
     check_error(&final_list);
 
-
+    //println!("{:?}" , final_list);
     return final_list
 }

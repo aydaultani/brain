@@ -1,7 +1,6 @@
 use crate::utils::*;
 
 pub fn check_error(input: &Vec<TokenRes>) {
-
     let res = TokenRes {
         item: "noop".to_string(),
         token_type: Token::UNKNOWN
@@ -33,4 +32,8 @@ pub fn check_error(input: &Vec<TokenRes>) {
             }
         }
     }
+}
+
+pub fn compile_error(input: CompErr) {
+    panic!("Compile error: `{}` at `{:?}`" , input.reason , input.input)
 }
