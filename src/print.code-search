@@ -1,0 +1,31 @@
+# Query: print
+# ContextLines: 1
+
+9 results - 4 files
+
+src/compiler.rs:
+  64          }
+  65:         if i.token_type == Token::PRINT {
+  66              let res = v.get(&input[index + 3].item.to_string());
+
+src/main.rs:
+   8      let setRes = compile(&parse("set a 100;"), &mut v); 
+   9:     let getRes = compile(&parse("pri a;"), &mut v);
+  10:     println!("{} : {:?}" , setRes.res , setRes.comp_type);
+  11:     println!("{} : {:?}" , getRes.res , getRes.comp_type)
+  12:     //println!("{:?}" , parse("set 10;"))
+  13  }
+
+src/parser.rs:
+  24              if lexer.peek().item == 'r' {
+  25:                final_list.push(TokenRes {item: "print".to_string(), token_type: Token::PRINT}) 
+  26              }
+
+  32  
+  33:     //println!("{:?}" , final_list);
+  34      return final_list
+
+src/utils.rs:
+  10      SET,
+  11:     PRINT,
+  12      LETTER,

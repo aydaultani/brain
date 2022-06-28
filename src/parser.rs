@@ -20,9 +20,9 @@ pub fn parse (input: &str) -> Vec<TokenRes> {
                 final_list.push(TokenRes {item: "set".to_string(), token_type: Token::SET})
             }
         }
-        if lexer.fetch_cur().item == 'g' {
-            if lexer.peek().item == 'e' {
-               final_list.push(TokenRes {item: "get".to_string(), token_type: Token::GET}) 
+        if lexer.fetch_cur().item == 'p' {
+            if lexer.peek().item == 'r' {
+               final_list.push(TokenRes {item: "print".to_string(), token_type: Token::PRINT}) 
             }
         }
         lexer.advance(); 

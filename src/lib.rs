@@ -6,6 +6,8 @@ pub mod compiler;
 pub use utils::*;
 
 mod tests {
+    use std::collections::HashMap;
+
 
     #[test]
     fn mid_colon_test() {
@@ -27,26 +29,39 @@ mod tests {
 
     #[test]
     fn arth_add() {
-        let result = crate::compiler::compile(&crate::parser::parse("100+100;"));
+        let mut v: HashMap<String, crate::utils::Variable> = HashMap::new();
+        let result = crate::compiler::compile(&crate::parser::parse("100+100;"), &mut v);
         assert_eq!(result.res, "200")
     }
 
     #[test]
     fn sub_test() {
-        let result = crate::compiler::compile(&crate::parser::parse("200-100;"));
+        let mut v: HashMap<String, crate::utils::Variable> = HashMap::new();
+        let result = crate::compiler::compile(&crate::parser::parse("200-100;"), &mut v);
         assert_eq!(result.res, "100")
     }
 
     #[test]
     fn mult_test() {
-        let result = crate::compiler::compile(&crate::parser::parse("100*10;"));
+        let mut v: HashMap<String, crate::utils::Variable> = HashMap::new();
+        let result = crate::compiler::compile(&crate::parser::parse("100*10;"), &mut v);
         assert_eq!(result.res, "1000") 
     }
 
     #[test]
     fn div_test() {
-        let result = crate::compiler::compile(&crate::parser::parse("100/2;"));
+        let mut v: HashMap<String, crate::utils::Variable> = HashMap::new();
+        let result = crate::compiler::compile(&crate::parser::parse("100/2;"), &mut v);
         assert_eq!(result.res, "50")
+    }
+
+    #[test]
+    fn var_set_test_str() {
+        let mut v: HashMap<String, crate::utils::Variable> = HashMap::new();
+        let setRes = crate::compiler::compile(&crate::parser::parse("set a 100;"), &mut v); 
+        let getRes = crate::compiler::compile(&crate::parser::parse("print a;"), &mut v);
+        let foo = false;
+        if getRes.res != "100".to_string() {}
     }
 
 }

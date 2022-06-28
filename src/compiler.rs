@@ -1,9 +1,14 @@
+use std::collections::HashMap;
+
+
 use crate::utils::*;
+use crate::utils::VarPrintRes;
+use crate::MulRet;
 use crate::error::compile_error;
 
-pub fn compile(input: &Vec<TokenRes>) -> CompRes {
+pub fn compile(input: &Vec<TokenRes>, v: &mut HashMap<String, Variable>) -> MulRet {
     let mut arithmetics: Vec<Token> = Vec::new();
-    let mut variables: Vec<Variable> = Vec::new();
+
     arithmetics.push(Token::ADD);
     arithmetics.push(Token::SUB);
     arithmetics.push(Token::MULT);
@@ -17,22 +22,22 @@ pub fn compile(input: &Vec<TokenRes>) -> CompRes {
             match &i.token_type {
                 Token::ADD => {
                     let res = lhs + rhs;
-                    return CompRes {res: res.to_string() , comp_type: CompType::ARTH}
+                    return MulRet::COMP(CompRes {res: res.to_string() , comp_type: CompType::ARTH})
                 },
                 Token::SUB => {
                     let res = lhs - rhs;
-                    return CompRes {res: res.to_string() , comp_type: CompType::ARTH}
+                    return MulRet::COMP(CompRes {res: res.to_string() , comp_type: CompType::ARTH})
                 },
                 Token::MULT => {
                     let res = lhs * rhs;
-                    return CompRes {res: res.to_string() , comp_type: CompType::ARTH}
+                    return MulRet::COMP(CompRes {res: res.to_string() , comp_type: CompType::ARTH})
                 },
                 Token::DIV => {
                     let res = lhs / rhs;
-                    return CompRes {res: res.to_string() , comp_type: CompType::ARTH}
+                    return MulRet::COMP(CompRes {res: res.to_string() , comp_type: CompType::ARTH})
                 },
                 _ => {
-                    return CompRes {res: "".to_string() , comp_type: CompType::UNKNOWN}
+                    return MulRet::COMP(CompRes {res: "".to_string() , comp_type: CompType::UNKNOWN})
                 }
             }
         }
@@ -46,22 +51,33 @@ pub fn compile(input: &Vec<TokenRes>) -> CompRes {
                 compile_error(CompErr {reason: "Can't set arithmetic operators as variable".to_string(), input: input.to_vec()})
             }
             
-            let is_letter = input[index + 3].item.parse::<i32>().is_err();
+            let is_letter = input[index + 4].item.to_string().parse::<i32>().is_err();
             if is_letter {
-                vtype = DataTypes::STR
+                vtype = DataTypes::STR;
             }
-            else {
+            else if !is_letter {
                 vtype = DataTypes::INT;
             }
+            else {
+                vtype = DataTypes::UNKNOWN;
+            }
 
-            variables.push(Variable {value: input[index + 3].item.to_string() , data_type: vtype});
-            let res = format!("{:?}" , variables);
-            return CompRes {res: res.to_string() , comp_type: CompType::VARIABLE}
+            if !input[index + 3].item.to_string().parse::<i32>().is_err() {
+                panic!("Can't set variable name to integer")
+            }
+
+            let var: Variable = Variable {value: input[index + 4].item.to_string() , data_type: vtype};
+            v.insert(input[index + 3].item.to_string(), var);
+            //variables.push();
+            let res = format!("{:?}" , v);
+            return MulRet::COMP(CompRes {res: res.to_string() , comp_type: CompType::VARIABLE})
         }
-        if i.token_type == Token::GET {
-            let res = variables.get(index + 3);
-            println!("{:?}" , res)
+        if i.token_type == Token::PRINT {
+            let res = v.get(&input[index + 5].item.to_string());
+            let m = &res.expect("msg").value;
+            return MulRet::VPRINT(VarPrintRes {val: m.to_string(), vtype: DataTypes::BOOL})
+            //return CompRes {res: format!("{:?}", res.expect("CompRes GET Err")), comp_type: CompType::VARIABLE}
         }
     }
-    return CompRes {res: "".to_string() , comp_type: CompType::UNKNOWN}
+    return MulRet::COMP(CompRes {res: "".to_string() , comp_type: CompType::UNKNOWN})
 }
